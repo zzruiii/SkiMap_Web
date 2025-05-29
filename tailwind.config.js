@@ -14,6 +14,7 @@ export default {
       },
       fontFamily: {
         'inria': ['Inria Sans', 'sans-serif'],
+        'jersey': ['Jersey 25', 'sans-serif'],
       },
       animation: {
         'snow-fall': 'snowfall linear infinite',
