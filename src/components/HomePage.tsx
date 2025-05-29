@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Snowflake from './Snowflake';
 import ScrollIndicator from './ScrollIndicator';
-// 导入SVG资源
-import mountain1 from '../assets/mountain-1.svg';
-import mountain2 from '../assets/mountain-2.svg';
-import mountain3 from '../assets/mountain-3.svg';
-import mountain4 from '../assets/mountain-4.svg';
+// 导入新的山脉SVG资源
+import mountainSvg from '../assets/00mountain.svg';
 
 const HomePage: React.FC = () => {
   const [snowflakes, setSnowflakes] = useState<Array<{
@@ -55,15 +52,14 @@ const HomePage: React.FC = () => {
     <div className="relative w-full h-screen overflow-hidden">
       {/* 添加响应式样式 */}
       <style>{`
-        .white-mountain {
+        .blue-mountain {
           position: absolute;
-          bottom: 0; /* 贴合底部 */
-          left: 39.06%;
-          width: 45.12%;
+          bottom: 0;
+          left: 13.79%;
+          width: 78.52%;
           height: auto;
-          z-index: 4;
+          z-index: 2;
           transform-origin: bottom left;
-          transform: translateY(-8vh); /* 向上移动来覆盖蓝色山脉 */
         }
         
         .main-title {
@@ -75,20 +71,21 @@ const HomePage: React.FC = () => {
         }
         
         @media (min-width: 1200px) {
-          .white-mountain {
-            transform: translateY(-12vh);
+          .blue-mountain {
+            width: 78.52%;
           }
         }
         
         @media (min-width: 1600px) {
-          .white-mountain {
-            transform: translateY(-15vh);
+          .blue-mountain {
+            width: 78.52%;
           }
         }
         
         @media (max-width: 768px) {
-          .white-mountain {
-            transform: translateY(-5vh);
+          .blue-mountain {
+            left: 10%;
+            width: 85%;
           }
           .main-title {
             font-size: 32px;
@@ -99,8 +96,9 @@ const HomePage: React.FC = () => {
         }
         
         @media (max-width: 480px) {
-          .white-mountain {
-            transform: translateY(-3vh);
+          .blue-mountain {
+            left: 5%;
+            width: 90%;
           }
           .main-title {
             font-size: 24px;
@@ -119,58 +117,12 @@ const HomePage: React.FC = () => {
         }}
       />
 
-      {/* 山脉层次 - 根据Figma精确数据重建，底部贴合 */}
+      {/* 新的山脉 - 使用00mountain.svg，按照Figma精确比例 */}
       <div className="absolute inset-0">
-        {/* 背景山脉 - 深蓝色 (#0B1748) - Vector 1 */}
         <img 
-          src={mountain1} 
-          alt="背景山"
-          className="absolute w-full h-auto object-cover"
-          style={{ 
-            zIndex: 1,
-            bottom: '0', // 贴合底部
-            left: '-0.39%', // x: -5/1280 = -0.39%
-            width: '100.51%', // width: 1286.5/1280 = 100.51%
-            height: 'auto',
-            transformOrigin: 'bottom left'
-          }}
-        />
-        
-        {/* 主要蓝色山脉 (#4579CC) - Vector 2 */}
-        <img 
-          src={mountain2} 
-          alt="主山脉"
-          className="absolute h-auto object-cover"
-          style={{ 
-            zIndex: 2,
-            bottom: '0', // 贴合底部
-            left: '13.91%', // x: 178/1280 = 13.91%
-            width: '78.4%', // width: 1003.5/1280 = 78.4%
-            height: 'auto',
-            transformOrigin: 'bottom left'
-          }}
-        />
-        
-        {/* 深蓝山脉 (#293F88) - Vector 4 */}
-        <img 
-          src={mountain3} 
-          alt="左侧山"
-          className="absolute h-auto object-cover"
-          style={{ 
-            zIndex: 3,
-            bottom: '0', // 贴合底部
-            left: '13.79%', // x: 176.5/1280 = 13.79%
-            width: '39.73%', // width: 508.5/1280 = 39.73%
-            height: 'auto',
-            transformOrigin: 'bottom left'
-          }}
-        />
-        
-        {/* 白色前景山脉 (#FEFFFF) - Vector 3 */}
-        <img 
-          src={mountain4} 
-          alt="白色前景"
-          className="white-mountain"
+          src={mountainSvg} 
+          alt="山脉"
+          className="blue-mountain"
         />
       </div>
 

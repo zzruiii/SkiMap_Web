@@ -169,17 +169,17 @@ const MapPage: React.FC = () => {
       {/* 背景装饰层 */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%2080%2080%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23FFFFFF%22%20fill-opacity%3D%220.03%22%3E%3Cpath%20d%3D%22M50%200H30L0%2050L30%2080H50L80%2050L50%200Z%22%20/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30" />
       
-      {/* 页面标题 - 调整位置让地图有更多空间 */}
+      {/* 页面标题 - 移动到页面左上角显示 */}
       <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="absolute top-4 md:top-6 left-1/2 transform -translate-x-1/2 z-20 text-center"
+        className="absolute top-4 md:top-6 left-4 md:left-6 z-20 text-left"
       >
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-inria">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 font-inria" style={{ color: '#293F88' }}>
           Ski Resorts
         </h1>
-        <p className="text-sm md:text-base text-blue-100 max-w-md mx-auto px-2 font-inria">
+        <p className="text-base md:text-lg max-w-md font-inria" style={{ color: '#293F88' }}>
           Discover the best skiing destinations across France
         </p>
       </motion.div>
@@ -196,8 +196,8 @@ const MapPage: React.FC = () => {
         <div 
           className="w-full h-full relative overflow-hidden"
           style={{
-            backgroundImage: "url('/src/assets/france-map-detail.svg')",
-            backgroundSize: 'cover', // 保持cover让地图填满整个屏幕
+            backgroundImage: "url('/src/assets/ski_map.svg')",
+            backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             minHeight: '100vh',
@@ -257,25 +257,30 @@ const MapPage: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* 返回首页提示 - 调整样式使其更加突出 */}
+      {/* 返回首页提示 - 调整为页面正上方居中显示 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.9 }}
-        className="fixed top-2 right-4 md:top-4 md:right-6 flex flex-col items-center text-white z-50"
+        animate={{ 
+          opacity: 1, 
+          y: [0, -3, 0]
+        }}
+        transition={{ 
+          opacity: { duration: 0.6, delay: 0.9 },
+          y: {
+            duration: 1.8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }
+        }}
+        className="fixed top-2 left-1/2 transform -translate-x-1/2 md:top-4 flex flex-col items-center z-50"
       >
         <motion.svg
           width="18"
           height="10"
           viewBox="0 0 24 16"
           fill="none"
-          className="text-white mb-1"
-          animate={{ y: [0, -3, 0] }}
-          transition={{
-            duration: 1.8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="mb-1"
+          style={{ color: '#293F88' }}
         >
           <path
             d="M22 14L12 4L2 14"
@@ -285,9 +290,46 @@ const MapPage: React.FC = () => {
             strokeLinejoin="round"
           />
         </motion.svg>
-        <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
+        <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full whitespace-nowrap">
           Scroll up to return
         </p>
+      </motion.div>
+
+      {/* 向下探索提示 - 页面下方中央显示 */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ 
+          opacity: 1, 
+          y: [0, 3, 0]
+        }}
+        transition={{ 
+          opacity: { duration: 0.6, delay: 1.1 },
+          y: {
+            duration: 1.8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }
+        }}
+        className="fixed bottom-2 left-1/2 transform -translate-x-1/2 md:bottom-4 flex flex-col items-center z-50"
+      >
+        <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full mb-1 whitespace-nowrap">
+          Scroll down to explore blue bird days
+        </p>
+        <motion.svg
+          width="18"
+          height="10"
+          viewBox="0 0 24 16"
+          fill="none"
+          style={{ color: '#293F88' }}
+        >
+          <path
+            d="M2 2L12 12L22 2"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </motion.svg>
       </motion.div>
     </div>
   );
