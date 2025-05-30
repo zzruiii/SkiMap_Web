@@ -2,151 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
 import skiMapSvg from '../assets/ski_map.svg';
-
-// CSV数据解析函数
-const parseCSVData = async () => {
-  try {
-    // 使用相对路径，确保在GitHub Pages上能正确加载
-    const csvUrl = import.meta.env.DEV 
-      ? '/00bluebird_day.csv' 
-      : `${import.meta.env.BASE_URL}00bluebird_day.csv`;
-    console.log('Attempting to fetch CSV from:', csvUrl);
-    console.log('Base URL:', import.meta.env.BASE_URL);
-    console.log('Is development:', import.meta.env.DEV);
-    
-    const response = await fetch(csvUrl);
-    console.log('Fetch response status:', response.status, response.statusText);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const csvText = await response.text();
-    console.log('CSV text length:', csvText.length);
-    console.log('First 200 characters of CSV:', csvText.substring(0, 200));
-    
-    const lines = csvText.split('\n').filter(line => line.trim());
-    console.log('Total CSV lines:', lines.length);
-    
-    // 跳过标题行（前3行）
-    const dataLines = lines.slice(3);
-    console.log('Data lines after skipping headers:', dataLines.length);
-    
-    const data: {[month: string]: {[week: string]: {[resortName: string]: number}}} = {};
-    
-    // 初始化数据结构 - 注意CSV中包含了November
-    const months = ['November', 'December', 'January', 'February', 'March', 'April'];
-    const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-    
-    months.forEach(month => {
-      data[month] = {};
-      weeks.forEach(week => {
-        data[month][week] = {};
-      });
-    });
-    
-    // 解析每行数据
-    dataLines.forEach((line) => {
-      const columns = line.split(',');
-      if (columns.length > 1 && columns[0].trim()) {
-        const resortName = columns[0].trim();
-        
-        // 跳过空白行
-        if (!resortName || columns.length < 25) return;
-        
-        console.log(`Processing resort: ${resortName}, columns: ${columns.length}`);
-        
-        // Nov: columns 1-4, Dec: columns 5-8, Jan: columns 9-12, Feb: columns 13-16, Mar: columns 17-20, Apr: columns 21-24
-        const monthIndexes = {
-          'November': { start: 1, end: 4 },
-          'December': { start: 5, end: 8 },
-          'January': { start: 9, end: 12 },
-          'February': { start: 13, end: 16 },
-          'March': { start: 17, end: 20 },
-          'April': { start: 21, end: 24 }
-        };
-        
-        Object.entries(monthIndexes).forEach(([month, indexes]) => {
-          for (let i = 0; i < 4; i++) {
-            const columnIndex = indexes.start + i;
-            const value = parseFloat(columns[columnIndex]?.trim() || '0');
-            const week = `Week ${i + 1}`;
-            
-            if (!isNaN(value)) {
-              data[month][week][resortName] = value;
-            }
-          }
-        });
-      }
-    });
-    
-    console.log('Successfully parsed CSV data');
-    console.log('Available months:', Object.keys(data));
-    console.log('Sample data for November Week 1:', Object.keys(data['November']['Week 1']).slice(0, 5));
-    
-    return data;
-  } catch (error) {
-    console.error('Error parsing CSV data:', error);
-    console.log('Falling back to random data generation');
-    // 如果解析失败，返回随机数据作为后备
-    return generateRandomData(skiResorts);
-  }
-};
-
-// 生成随机蓝鸟天数数据（临时使用）
-const generateRandomData = (resorts: SkiResort[]) => {
-  const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-  const months = ['January', 'February', 'March', 'April', 'December'];
-  
-  const data: {[month: string]: {[week: string]: {[resortId: string]: number}}} = {};
-  
-  months.forEach(month => {
-    data[month] = {};
-    weeks.forEach(week => {
-      data[month][week] = {};
-      resorts.forEach(resort => {
-        // 生成0.1-7.0的随机数据点
-        data[month][week][resort.id] = parseFloat((Math.random() * 6.9 + 0.1).toFixed(1));
-      });
-    });
-  });
-  
-  return data;
-};
-
-// 滑雪场名称映射（CSV中的名称到我们系统中的名称）
-const resortNameMapping: {[csvName: string]: string} = {
-  'Chamonix': 'Chamonix',
-  'Courchevel': 'Courchevel',
-  'La Plagne': 'La Plagne',
-  'Méribel': 'Méribel',
-  'Tignes': 'Tignes',
-  'Val d\'Isère': "Val d'Isère",
-  'Val Thorens': 'Val Thorens',
-  'Les Arcs': 'Les Arcs',
-  'Avoriaz': 'Avoriaz',
-  'Les Menuires': 'Les Menuires',
-  'Morzine': 'Morzine',
-  'Les Deux Alpes': 'Les Deux Alpes',
-  'Serre Chevalier': 'Serre Chevalier',
-  'Alpe d\'Huez': "Alpe d'Huez",
-  'Flaine': 'Flaine',
-  'La Clusaz': 'La Clusaz',
-  'La Rosière': 'La Rosière',
-  'Montgenèvre': 'Montgenèvre',
-  'Val Cenis': 'Val Cenis',
-  'St Martin de Belleville': 'St Martin de Belleville',
-  'Isola 2000': 'Isola 2000',
-  'Risoul': 'Risoul',
-  'Valmorel': 'Valmorel',
-  'Les Gets': 'Les Gets',
-  'Vaujany': 'Vaujany',
-  'Les Saisies': 'Les Saisies',
-  'Les Houches': 'Les Houches',
-  'Saint Gervais les Bains': 'Saint Gervais les Bains',
-  'Les Carroz': 'Les Carroz',
-  'Les Orres': 'Les Orres'
-};
+import { bluebirdData } from '../data/bluebirdData';
 
 // 小山图标组件
 const MountainChartIcon: React.FC<{ resort: SkiResort; index: number; totalResorts: number }> = ({ resort, index, totalResorts }) => (
@@ -293,8 +149,6 @@ const TimeSelector: React.FC<{
 const ChartPage: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState('November');
   const [selectedWeek, setSelectedWeek] = useState('Week 1');
-  const [chartData, setChartData] = useState<{[month: string]: {[week: string]: {[resortName: string]: number}}} | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   
   // 处理月份变化
   const handleMonthChange = (month: string) => {
@@ -308,47 +162,30 @@ const ChartPage: React.FC = () => {
     setSelectedWeek(week);
   };
   
-  // 加载CSV数据
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        const data = await parseCSVData();
-        setChartData(data);
-        console.log('Data loaded successfully, available months:', Object.keys(data));
-      } catch (error) {
-        console.error('Failed to load chart data:', error);
-        // 使用随机数据作为后备
-        setChartData(generateRandomData(skiResorts));
-      }
-      setIsLoading(false);
-    };
-    
-    loadData();
-  }, []);
-  
   // 监听选中状态变化
   useEffect(() => {
     console.log('Current selection:', selectedMonth, selectedWeek);
-    if (chartData && chartData[selectedMonth] && chartData[selectedMonth][selectedWeek]) {
+    const monthData = (bluebirdData as any)[selectedMonth];
+    if (monthData && monthData[selectedWeek]) {
       console.log('Data available for current selection');
     } else {
       console.log('No data available for current selection');
     }
-  }, [selectedMonth, selectedWeek, chartData]);
+  }, [selectedMonth, selectedWeek]);
   
   // 按照从北到南排序滑雪场（y坐标从小到大）
   const sortedResorts = [...skiResorts].sort((a, b) => a.position.y - b.position.y);
   
   // 获取当前数据 - 需要通过名称映射找到对应的数据
   const getCurrentResortData = (resort: SkiResort) => {
-    if (!chartData || !chartData[selectedMonth] || !chartData[selectedMonth][selectedWeek]) {
+    const monthData = (bluebirdData as any)[selectedMonth];
+    if (!monthData || !monthData[selectedWeek]) {
       return 0;
     }
     
-    const weekData = chartData[selectedMonth][selectedWeek];
+    const weekData = monthData[selectedWeek];
     
-    // 直接在CSV数据中查找匹配的滑雪场名称
+    // 直接在数据中查找匹配的滑雪场名称
     if (weekData[resort.name] !== undefined) {
       return weekData[resort.name];
     }
@@ -366,15 +203,6 @@ const ChartPage: React.FC = () => {
       }
     }
     
-    // 如果还是找不到，尝试通过映射表查找
-    const csvName = Object.keys(resortNameMapping).find(csvKey => 
-      resortNameMapping[csvKey] === resort.name
-    );
-    
-    if (csvName && weekData[csvName] !== undefined) {
-      return weekData[csvName];
-    }
-    
     // 如果找不到匹配的数据，输出调试信息
     console.log(`No data found for resort: ${resort.name}, available keys:`, Object.keys(weekData));
     return 0;
@@ -382,21 +210,6 @@ const ChartPage: React.FC = () => {
   
   // 获取所有当前数据值用于计算最大值
   const chartHeight = 300; // 图表高度
-
-  // 如果数据还在加载中，显示加载状态
-  if (isLoading) {
-    return (
-      <div className="w-screen h-screen bg-gradient-to-br from-[#0B1748] via-[#122360] to-[#1A327A] relative overflow-hidden flex items-center justify-center">
-        <motion.div
-          className="text-white text-xl font-inria"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          Loading bluebird data...
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
