@@ -6,7 +6,7 @@ import { skiResorts, SkiResort } from '../types/SkiResort';
 const parseCSVData = async () => {
   try {
     // 修改路径以正确访问public目录中的文件
-    const response = await fetch('/assets/bluebird_day.csv');
+    const response = await fetch('/SkiMap_Web/assets/bluebird_day.csv');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -381,7 +381,7 @@ const ChartPage: React.FC = () => {
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: "url('/src/assets/ski_map.svg')",
+          backgroundImage: "url('/SkiMap_Web/assets/ski_map.svg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'
