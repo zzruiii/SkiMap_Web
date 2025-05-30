@@ -6,7 +6,8 @@ import { skiResorts, SkiResort } from '../types/SkiResort';
 const parseCSVData = async () => {
   try {
     // 使用import.meta.env.BASE_URL动态构建路径
-    const csvUrl = `${import.meta.env.BASE_URL}assets/bluebird_day.csv`;
+    // public目录的文件会被复制到dist根目录，不是assets子目录
+    const csvUrl = `${import.meta.env.BASE_URL}00bluebird_day.csv`;
     console.log('Attempting to fetch CSV from:', csvUrl);
     console.log('Base URL:', import.meta.env.BASE_URL);
     
@@ -400,7 +401,7 @@ const ChartPage: React.FC = () => {
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: `url('${import.meta.env.BASE_URL}assets/ski_map.svg')`,
+          backgroundImage: `url('${import.meta.env.BASE_URL}ski_map.svg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'
