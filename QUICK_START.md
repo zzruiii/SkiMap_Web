@@ -34,3 +34,26 @@ git push -u origin main
 - 每次推送到main分支都会自动重新部署
 - 如果首次访问出现404，请等待几分钟后再试
 - 确保仓库名称为 `ID_Dev`（与vite.config.ts中的base路径匹配） 
+
+## 🔧 主要修复内容：
+
+1. **权限配置位置**：将 `permissions` 移到了正确的位置（在jobs之前）
+2. **更新action版本**：
+   - `actions/setup-node@v3` → `@v4`
+   - `actions/configure-pages@v3` → `@v4`
+   - `actions/upload-pages-artifact@v2` → `@v3`
+   - `actions/deploy-pages@v2` → `@v4`
+3. **移除pull_request触发**：只在推送到main分支时部署
+
+## 📝 接下来的步骤：
+
+1. **更新工作流文件**：用上面的内容替换您的 `.github/workflows/deploy.yml` 文件
+2. **重新提交推送**：
+   ```powershell
+   git add .github/workflows/deploy.yml
+   git commit -m "Fix GitHub Actions workflow configuration"
+   git push origin main
+   ```
+3. **等待重新部署**：GitHub会自动重新运行部署流程
+
+请更新这个文件后重新推送，部署应该就能成功了！🚀 
