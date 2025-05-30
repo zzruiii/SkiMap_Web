@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/SkiMap_Web/',
+  base: '/ID_Dev/',
   server: {
     port: 5173,
     host: true
