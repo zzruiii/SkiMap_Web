@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
 
 // CSV数据解析函数
@@ -358,8 +358,6 @@ const ChartPage: React.FC = () => {
   };
   
   // 获取所有当前数据值用于计算最大值
-  const currentDataValues = sortedResorts.map(resort => getCurrentResortData(resort));
-  const maxValue = Math.max(...currentDataValues, 7); // 确保最大值至少为7
   const chartHeight = 300; // 图表高度
 
   // 如果数据还在加载中，显示加载状态
