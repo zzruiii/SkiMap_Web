@@ -1,109 +1,96 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
+import skiMapSvg from '../assets/ski_map.svg';
 
 // CSV数据解析函数
 const parseCSVData = async () => {
   try {
-    // 修复GitHub Pages路径问题 - 确保正确的base路径
-    const baseUrl = import.meta.env.BASE_URL || '/SkiMap_Web/';
-    const csvUrl = `${baseUrl}00bluebird_day.csv`;
+    // 使用相对路径，确保在GitHub Pages上能正确加载
+    const csvUrl = import.meta.env.DEV 
+      ? '/00bluebird_day.csv' 
+      : `${import.meta.env.BASE_URL}00bluebird_day.csv`;
     console.log('Attempting to fetch CSV from:', csvUrl);
-    console.log('Base URL:', baseUrl);
-    console.log('Environment:', import.meta.env.MODE);
+    console.log('Base URL:', import.meta.env.BASE_URL);
+    console.log('Is development:', import.meta.env.DEV);
     
     const response = await fetch(csvUrl);
     console.log('Fetch response status:', response.status, response.statusText);
     
     if (!response.ok) {
-      // 如果主路径失败，尝试备用路径
-      const fallbackUrl = '/SkiMap_Web/00bluebird_day.csv';
-      console.log('Trying fallback URL:', fallbackUrl);
-      const fallbackResponse = await fetch(fallbackUrl);
-      
-      if (!fallbackResponse.ok) {
-        throw new Error(`HTTP error! status: ${response.status}, fallback status: ${fallbackResponse.status}`);
-      }
-      
-      const csvText = await fallbackResponse.text();
-      console.log('CSV loaded from fallback URL, text length:', csvText.length);
-      return processCsvText(csvText);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     
     const csvText = await response.text();
     console.log('CSV text length:', csvText.length);
     console.log('First 200 characters of CSV:', csvText.substring(0, 200));
     
-    return processCsvText(csvText);
-  } catch (error) {
-    console.error('Error loading CSV data:', error);
-    // 返回空数据而不是抛出错误，这样页面仍然可以显示
-    return {};
-  }
-};
-
-// 提取CSV处理逻辑到单独函数
-const processCsvText = (csvText: string) => {
-  const lines = csvText.split('\n').filter(line => line.trim());
-  console.log('Total CSV lines:', lines.length);
-  
-  // 跳过标题行（前3行）
-  const dataLines = lines.slice(3);
-  console.log('Data lines after skipping headers:', dataLines.length);
-  
-  const data: {[month: string]: {[week: string]: {[resortName: string]: number}}} = {};
-  
-  // 初始化数据结构 - 注意CSV中包含了November
-  const months = ['November', 'December', 'January', 'February', 'March', 'April'];
-  const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-  
-  months.forEach(month => {
-    data[month] = {};
-    weeks.forEach(week => {
-      data[month][week] = {};
-    });
-  });
-  
-  // 解析每行数据
-  dataLines.forEach((line) => {
-    const columns = line.split(',');
-    if (columns.length > 1 && columns[0].trim()) {
-      const resortName = columns[0].trim();
-      
-      // 跳过空白行
-      if (!resortName || columns.length < 25) return;
-      
-      console.log(`Processing resort: ${resortName}, columns: ${columns.length}`);
-      
-      // Nov: columns 1-4, Dec: columns 5-8, Jan: columns 9-12, Feb: columns 13-16, Mar: columns 17-20, Apr: columns 21-24
-      const monthIndexes = {
-        'November': { start: 1, end: 4 },
-        'December': { start: 5, end: 8 },
-        'January': { start: 9, end: 12 },
-        'February': { start: 13, end: 16 },
-        'March': { start: 17, end: 20 },
-        'April': { start: 21, end: 24 }
-      };
-      
-      Object.entries(monthIndexes).forEach(([month, indexes]) => {
-        for (let i = 0; i < 4; i++) {
-          const columnIndex = indexes.start + i;
-          const value = parseFloat(columns[columnIndex]?.trim() || '0');
-          const week = `Week ${i + 1}`;
-          
-          if (!isNaN(value)) {
-            data[month][week][resortName] = value;
-          }
-        }
+    const lines = csvText.split('\n').filter(line => line.trim());
+    console.log('Total CSV lines:', lines.length);
+    
+    // 跳过标题行（前3行）
+    const dataLines = lines.slice(3);
+    console.log('Data lines after skipping headers:', dataLines.length);
+    
+    const data: {[month: string]: {[week: string]: {[resortName: string]: number}}} = {};
+    
+    // 初始化数据结构 - 注意CSV中包含了November
+    const months = ['November', 'December', 'January', 'February', 'March', 'April'];
+    const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    
+    months.forEach(month => {
+      data[month] = {};
+      weeks.forEach(week => {
+        data[month][week] = {};
       });
-    }
-  });
-  
-  console.log('Successfully parsed CSV data');
-  console.log('Available months:', Object.keys(data));
-  console.log('Sample data for November Week 1:', Object.keys(data['November']['Week 1']).slice(0, 5));
-  
-  return data;
+    });
+    
+    // 解析每行数据
+    dataLines.forEach((line) => {
+      const columns = line.split(',');
+      if (columns.length > 1 && columns[0].trim()) {
+        const resortName = columns[0].trim();
+        
+        // 跳过空白行
+        if (!resortName || columns.length < 25) return;
+        
+        console.log(`Processing resort: ${resortName}, columns: ${columns.length}`);
+        
+        // Nov: columns 1-4, Dec: columns 5-8, Jan: columns 9-12, Feb: columns 13-16, Mar: columns 17-20, Apr: columns 21-24
+        const monthIndexes = {
+          'November': { start: 1, end: 4 },
+          'December': { start: 5, end: 8 },
+          'January': { start: 9, end: 12 },
+          'February': { start: 13, end: 16 },
+          'March': { start: 17, end: 20 },
+          'April': { start: 21, end: 24 }
+        };
+        
+        Object.entries(monthIndexes).forEach(([month, indexes]) => {
+          for (let i = 0; i < 4; i++) {
+            const columnIndex = indexes.start + i;
+            const value = parseFloat(columns[columnIndex]?.trim() || '0');
+            const week = `Week ${i + 1}`;
+            
+            if (!isNaN(value)) {
+              data[month][week][resortName] = value;
+            }
+          }
+        });
+      }
+    });
+    
+    console.log('Successfully parsed CSV data');
+    console.log('Available months:', Object.keys(data));
+    console.log('Sample data for November Week 1:', Object.keys(data['November']['Week 1']).slice(0, 5));
+    
+    return data;
+  } catch (error) {
+    console.error('Error parsing CSV data:', error);
+    console.log('Falling back to random data generation');
+    // 如果解析失败，返回随机数据作为后备
+    return generateRandomData(skiResorts);
+  }
 };
 
 // 生成随机蓝鸟天数数据（临时使用）
@@ -417,7 +404,7 @@ const ChartPage: React.FC = () => {
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: `url('${import.meta.env.BASE_URL || '/SkiMap_Web/'}ski_map.svg')`,
+          backgroundImage: `url('${skiMapSvg}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
 import SkiResortCard from './SkiResortCard';
+import skiMapSvg from '../assets/ski_map.svg';
 
 // 区域限制的雪花组件 - 仅在地图右侧显示
 const RegionalSnowflake: React.FC<{
@@ -196,7 +197,7 @@ const MapPage: React.FC = () => {
         <div 
           className="w-full h-full relative overflow-hidden"
           style={{
-            backgroundImage: `url('${import.meta.env.BASE_URL || '/SkiMap_Web/'}ski_map.svg')`,
+            backgroundImage: `url('${skiMapSvg}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
