@@ -9,5 +9,6 @@ export default defineConfig({
     port: 5173,
     host: true
   },
-  assetsInclude: ['**/*.svg']
+  assetsInclude: ['**/*.svg', '**/*.csv'],
+  publicDir: 'public'
 }) 

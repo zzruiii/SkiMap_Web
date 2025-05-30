@@ -6,15 +6,26 @@ import { skiResorts, SkiResort } from '../types/SkiResort';
 const parseCSVData = async () => {
   try {
     // 修改路径以正确访问public目录中的文件
-    const response = await fetch('/SkiMap_Web/assets/bluebird_day.csv');
+    const csvUrl = '/SkiMap_Web/assets/bluebird_day.csv';
+    console.log('Attempting to fetch CSV from:', csvUrl);
+    
+    const response = await fetch(csvUrl);
+    console.log('Fetch response status:', response.status, response.statusText);
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    
     const csvText = await response.text();
+    console.log('CSV text length:', csvText.length);
+    console.log('First 200 characters of CSV:', csvText.substring(0, 200));
+    
     const lines = csvText.split('\n').filter(line => line.trim());
+    console.log('Total CSV lines:', lines.length);
     
     // 跳过标题行（前3行）
     const dataLines = lines.slice(3);
+    console.log('Data lines after skipping headers:', dataLines.length);
     
     const data: {[month: string]: {[week: string]: {[resortName: string]: number}}} = {};
     
@@ -30,13 +41,15 @@ const parseCSVData = async () => {
     });
     
     // 解析每行数据
-    dataLines.forEach(line => {
+    dataLines.forEach((line) => {
       const columns = line.split(',');
       if (columns.length > 1 && columns[0].trim()) {
         const resortName = columns[0].trim();
         
         // 跳过空白行
         if (!resortName || columns.length < 25) return;
+        
+        console.log(`Processing resort: ${resortName}, columns: ${columns.length}`);
         
         // Nov: columns 1-4, Dec: columns 5-8, Jan: columns 9-12, Feb: columns 13-16, Mar: columns 17-20, Apr: columns 21-24
         const monthIndexes = {
@@ -62,9 +75,14 @@ const parseCSVData = async () => {
       }
     });
     
+    console.log('Successfully parsed CSV data');
+    console.log('Available months:', Object.keys(data));
+    console.log('Sample data for November Week 1:', Object.keys(data['November']['Week 1']).slice(0, 5));
+    
     return data;
   } catch (error) {
     console.error('Error parsing CSV data:', error);
+    console.log('Falling back to random data generation');
     // 如果解析失败，返回随机数据作为后备
     return generateRandomData(skiResorts);
   }
