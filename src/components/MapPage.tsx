@@ -196,7 +196,7 @@ const MapPage: React.FC = () => {
         <div 
           className="w-full h-full relative overflow-hidden"
           style={{
-            backgroundImage: "url('/SkiMap_Web/assets/ski_map.svg')",
+            backgroundImage: `url('${import.meta.env.BASE_URL}assets/ski_map.svg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',

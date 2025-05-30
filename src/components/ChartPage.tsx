@@ -5,9 +5,10 @@ import { skiResorts, SkiResort } from '../types/SkiResort';
 // CSV数据解析函数
 const parseCSVData = async () => {
   try {
-    // 修改路径以正确访问public目录中的文件
-    const csvUrl = '/SkiMap_Web/assets/bluebird_day.csv';
+    // 使用import.meta.env.BASE_URL动态构建路径
+    const csvUrl = `${import.meta.env.BASE_URL}assets/bluebird_day.csv`;
     console.log('Attempting to fetch CSV from:', csvUrl);
+    console.log('Base URL:', import.meta.env.BASE_URL);
     
     const response = await fetch(csvUrl);
     console.log('Fetch response status:', response.status, response.statusText);
@@ -399,7 +400,7 @@ const ChartPage: React.FC = () => {
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: "url('/SkiMap_Web/assets/ski_map.svg')",
+          backgroundImage: `url('${import.meta.env.BASE_URL}assets/ski_map.svg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'
