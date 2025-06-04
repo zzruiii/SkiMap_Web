@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
 import SkiResortCard from './SkiResortCard';
-import skiMapSvg from '../assets/ski_map.svg';
+import skiMapSvg from '../assets/00ski_map.svg';
 
 // 区域限制的雪花组件 - 仅在地图右侧显示
 const RegionalSnowflake: React.FC<{

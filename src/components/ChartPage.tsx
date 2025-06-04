@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
-import skiMapSvg from '../assets/ski_map.svg';
+import skiMapSvg from '../assets/00ski_map.svg';
 import { bluebirdData } from '../data/bluebirdData';
 
 // 小山图标组件

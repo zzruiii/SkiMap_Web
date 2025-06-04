@@ -153,7 +153,7 @@ const HomePage: React.FC = () => {
             textAlign: 'center'
           }}
         >
-          A map GUIDE for your winter skiing vocation
+          A MAP GUIDE FOR YOUR WINTER SKIING VACATION
         </h2>
         
         {/* 主标题 France - 根据Figma: x:583, y:486, width:106, height:43, fontSize:36px */}
