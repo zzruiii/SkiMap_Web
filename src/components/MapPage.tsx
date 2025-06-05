@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { skiResorts, SkiResort } from '../types/SkiResort';
 import SkiResortCard from './SkiResortCard';
-import skiMapSvg from '../assets/00ski_map.svg';
+import skiMapSvg from '../assets/111_ski.svg';
 
 interface MapPageProps {
   isActive: boolean;
@@ -24,8 +24,8 @@ const RegionalSnowflake: React.FC<{
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 生成随机的水平摆动幅度，但限制在右侧区域内
-  const swayAmount = Math.random() * 20 + 10; // 较小的摆动幅度，适合区域限制
+  // 生成随机的水平摆动幅度，优化摆动效果
+  const swayAmount = Math.random() * 25 + 15; // 15-40px的摆动幅度，更接近首页效果
   
   // 确保雪花只在右侧区域显示（rightBoundary以右）
   const adjustedLeft = rightBoundary + (left * (100 - rightBoundary) / 100);
@@ -37,14 +37,14 @@ const RegionalSnowflake: React.FC<{
         width: size,
         height: size,
         left: `${adjustedLeft}%`,
-        top: `-${size + 100}px`,
-        opacity: 0.75 + Math.random() * 0.25,
-        boxShadow: '0 0 6px rgba(255, 255, 255, 0.3)',
+        top: `-${size + 200}px`, // 增加起始高度，与首页保持一致
+        opacity: 0.85 + Math.random() * 0.15, // 提高透明度，更接近首页效果
+        boxShadow: '0 0 8px rgba(255, 255, 255, 0.4)', // 增强发光效果
         zIndex: 5,
       }}
       animate={{
-        y: [0, windowHeight + size + 100],
-        x: [0, swayAmount, -swayAmount/2, swayAmount, 0],
+        y: [0, windowHeight + size + 200], // 调整落下距离
+        x: [0, swayAmount, -swayAmount, swayAmount, 0], // 优化摆动模式
       }}
       transition={{
         duration,
@@ -53,7 +53,7 @@ const RegionalSnowflake: React.FC<{
         repeatType: "loop",
         ease: 'linear',
         x: {
-          duration: duration * 0.6,
+          duration: duration * 0.7, // 调整摆动频率
           repeat: Infinity,
           ease: 'easeInOut',
         }
@@ -77,26 +77,26 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
     const generateRegionalSnowflakes = () => {
       const flakes = [];
       
-      // 在右侧区域（意大利部分）生成雪花，数量适中
-      for (let i = 0; i < 25; i++) {
+      // 在右侧区域（意大利部分）生成雪花，增加数量以获得更好的视觉效果
+      for (let i = 0; i < 35; i++) { // 从25增加到35个
         let size;
         const sizeRandom = Math.random();
         
-        if (sizeRandom < 0.1) {
-          // 10% 大雪花 (24px)
-          size = 24;
-        } else if (sizeRandom < 0.3) {
-          // 20% 中雪花 (18px)
-          size = 18;
+        if (sizeRandom < 0.15) {
+          // 15% 大雪花 (30px) - 稍微增大
+          size = 30;
+        } else if (sizeRandom < 0.35) {
+          // 20% 中雪花 (22px) - 稍微增大
+          size = 22;
         } else {
-          // 70% 小雪花 (12px)
-          size = 12;
+          // 65% 小雪花 (14px) - 稍微增大
+          size = 14;
         }
         
         flakes.push({
           id: i,
-          delay: (i / 25) * 15 + Math.random() * 3,
-          duration: 10 + Math.random() * 8, // 10-18秒
+          delay: (i / 35) * 18 + Math.random() * 4, // 调整延迟分布
+          duration: 8 + Math.random() * 6, // 8-14秒，与首页保持一致
           size: size,
           left: Math.random() * 100, // 这个会被RegionalSnowflake调整到右侧区域
         });
@@ -124,8 +124,8 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
     >
       {/* 使用新的SVG图标模板 - 基于Figma精确规格 */}
       <svg
-        width="23"
-        height="25"
+        width="35"
+        height="38"
         viewBox="0 0 23 25"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -235,7 +235,7 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
           </div>
 
           {/* 右侧区域雪花动画层 - 仅在法国边境线东侧显示 */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none" style={{ zIndex: 6 }}>
             {regionalSnowflakes.map((flake) => (
               <RegionalSnowflake
                 key={flake.id}
@@ -243,7 +243,7 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
                 duration={flake.duration}
                 size={flake.size}
                 left={flake.left}
-                rightBoundary={75} // 法国边境线大约在75%位置，右侧25%为意大利地区
+                rightBoundary={70} // 调整边界到70%，覆盖更多意大利地区
               />
             ))}
           </div>
@@ -281,11 +281,11 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
           className="fixed top-2 left-1/2 transform -translate-x-1/2 md:top-4 flex flex-col items-center z-50"
         >
           <motion.svg
-            width="18"
-            height="10"
+            width="23"
+            height="13"
             viewBox="0 0 24 16"
             fill="none"
-            className="mb-1"
+            className="mb-2"
             style={{ color: '#293F88' }}
           >
             <path
@@ -296,7 +296,7 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
               strokeLinejoin="round"
             />
           </motion.svg>
-          <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full whitespace-nowrap">
+          <p className="text-sm font-medium text-white/90 bg-black/30 backdrop-blur-sm px-3 py-2 rounded-full whitespace-nowrap">
             Scroll up to return
           </p>
         </motion.div>
@@ -320,12 +320,12 @@ const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
           }}
           className="fixed bottom-2 left-1/2 transform -translate-x-1/2 md:bottom-4 flex flex-col items-center z-50"
         >
-          <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full mb-1 whitespace-nowrap">
+          <p className="text-sm font-medium text-white/90 bg-black/30 backdrop-blur-sm px-3 py-2 rounded-full mb-2 whitespace-nowrap">
             Scroll down to explore blue bird days
           </p>
           <motion.svg
-            width="18"
-            height="10"
+            width="23"
+            height="13"
             viewBox="0 0 24 16"
             fill="none"
             style={{ color: '#293F88' }}

@@ -8,7 +8,12 @@ interface ScrollIndicatorProps {
 const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({ text = "Scroll down to explore" }) => {
   return (
     <motion.div
-      className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white z-50"
+      className="absolute flex flex-col items-center text-white z-50"
+      style={{
+        bottom: '24px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+      }}
       animate={{ y: [0, -10, 0] }}
       transition={{
         duration: 2,

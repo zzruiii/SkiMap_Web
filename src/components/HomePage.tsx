@@ -8,7 +8,7 @@ interface HomePageProps {
   isActive: boolean;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ isActive }) => {
+const HomePage: React.FC<HomePageProps> = ({ isActive: _isActive }) => {
   const [snowflakes, setSnowflakes] = useState<Array<{
     id: number;
     delay: number;
@@ -174,10 +174,10 @@ const HomePage: React.FC<HomePageProps> = ({ isActive }) => {
         >
           France
         </h1>
+        
+        {/* 滚动提示 - 移到内容区域内 */}
+        <ScrollIndicator text="Scroll down to explore the map" />
       </div>
-
-      {/* 滚动提示 */}
-      <ScrollIndicator text="Scroll down to explore the map" />
     </div>
   );
 };
