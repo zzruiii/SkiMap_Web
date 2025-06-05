@@ -4,18 +4,22 @@ import { skiResorts, SkiResort } from '../types/SkiResort';
 import skiMapSvg from '../assets/00ski_map.svg';
 import { bluebirdData } from '../data/bluebirdData';
 
-// 小山图标组件
+interface ChartPageProps {
+  isActive: boolean;
+}
+
+// 小山图标组件 - 修改为水平布局
 const MountainChartIcon: React.FC<{ resort: SkiResort; index: number; totalResorts: number }> = ({ resort, index, totalResorts }) => (
   <motion.div
-    className="flex flex-col items-center justify-center"
+    className="flex items-center justify-start"
     style={{ 
-      minWidth: '32px', 
-      maxWidth: '45px',
-      width: `${100 / totalResorts}%`,
-      height: '90px' // 从120px减少到90px，让整体更紧凑
+      height: `calc(100% / ${totalResorts})`, // 使用计算高度确保均匀分布
+      width: '100%',
+      minHeight: '24px', // 减少最小高度
+      maxHeight: '32px' // 减少最大高度
     }}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
+    initial={{ opacity: 0, x: -20 }}
+    animate={{ opacity: 1, x: 0 }}
     transition={{ 
       duration: 0.5, 
       delay: index * 0.1,
@@ -24,12 +28,12 @@ const MountainChartIcon: React.FC<{ resort: SkiResort; index: number; totalResor
   >
     {/* 小山图标 */}
     <svg
-      width="16"
-      height="18"
+      width="14" // 减少图标大小
+      height="16" // 减少图标大小
       viewBox="0 0 23 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="mb-1"
+      className="mr-1.5 flex-shrink-0" // 减少右边距
     >
       <path 
         d="M1.90625 19.7651L0.414062 24.9427H22.9316C22.1612 22.7554 20.4745 18.2977 19.8911 17.9654C19.3077 17.6332 17.1274 14.2461 16.1101 12.5941C15.8184 13.0371 15.7016 13.0161 15.5155 12.4556C15.3933 12.0878 14.5656 9.62226 14.1467 8.46862C14.0831 8.29326 13.8214 8.10868 13.3838 7.49955C12.9462 6.89043 12.5049 5.50605 12.3516 4.7308C12.0412 3.71559 11.3979 1.57996 11.3082 1.15911C11.2184 0.738261 11.0314 0.83609 10.9492 0.937611C10.4892 1.75901 9.52204 3.46825 9.33356 3.73405C9.14507 3.99985 8.87356 4.10322 8.76136 4.12167C8.07697 5.49682 6.57132 8.4963 6.02381 9.49305C5.4763 10.4898 4.74105 11.1082 4.44186 11.2927L1.90625 19.7651Z" 
@@ -45,18 +49,11 @@ const MountainChartIcon: React.FC<{ resort: SkiResort; index: number; totalResor
       />
     </svg>
 
-    {/* 滑雪场名称 - 45度倾斜，移到图标下方 */}
+    {/* 滑雪场名称 - 水平显示，不旋转 */}
     <span 
-      className="text-xs text-white font-inria text-center opacity-80 whitespace-nowrap"
+      className="text-xs text-white font-inria opacity-80 whitespace-nowrap text-left"
       style={{
-        transform: 'rotate(-45deg)',
-        transformOrigin: 'center center',
-        fontSize: '9px',
-        width: '55px',
-        height: '32px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        fontSize: '8px' // 减少字体大小
       }}
     >
       {resort.name}
@@ -146,7 +143,7 @@ const TimeSelector: React.FC<{
   );
 };
 
-const ChartPage: React.FC = () => {
+const ChartPage: React.FC<ChartPageProps> = ({ isActive }) => {
   const [selectedMonth, setSelectedMonth] = useState('November');
   const [selectedWeek, setSelectedWeek] = useState('Week 1');
   
@@ -209,7 +206,7 @@ const ChartPage: React.FC = () => {
   };
   
   // 获取所有当前数据值用于计算最大值
-  const chartHeight = 300; // 图表高度
+  const chartHeight = 220; // 减少图表高度从300到220
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
@@ -246,166 +243,185 @@ const ChartPage: React.FC = () => {
       </motion.div>
 
       {/* 返回地图页面提示 - 页面正上方居中显示 */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ 
-          opacity: 1, 
-          y: [0, -3, 0]
-        }}
-        transition={{ 
-          opacity: { duration: 0.6, delay: 0.9 },
-          y: {
-            duration: 1.8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }
-        }}
-        className="fixed top-2 left-1/2 transform -translate-x-1/2 md:top-4 flex flex-col items-center z-50"
-      >
-        <motion.svg
-          width="18"
-          height="10"
-          viewBox="0 0 24 16"
-          fill="none"
-          className="mb-1"
-          style={{ color: '#FFFFFF' }}
+      {isActive && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ 
+            opacity: 1, 
+            y: [0, -3, 0]
+          }}
+          transition={{ 
+            opacity: { duration: 0.6, delay: 0.9 },
+            y: {
+              duration: 1.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }
+          }}
+          className="fixed top-2 left-1/2 transform -translate-x-1/2 md:top-4 flex flex-col items-center z-50"
         >
-          <path
-            d="M22 14L12 4L2 14"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </motion.svg>
-        <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full whitespace-nowrap">
-          Scroll up to return
-        </p>
-      </motion.div>
+          <motion.svg
+            width="18"
+            height="10"
+            viewBox="0 0 24 16"
+            fill="none"
+            className="mb-1"
+            style={{ color: '#FFFFFF' }}
+          >
+            <path
+              d="M22 14L12 4L2 14"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+          <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full whitespace-nowrap">
+            Scroll up to return
+          </p>
+        </motion.div>
+      )}
 
       {/* 主要内容区域 - 减少顶部间距，为图表预留更多空间 */}
-      <div className="flex flex-col h-full pt-20 p-6">
+      <div className="flex flex-col h-full pt-12 p-4"> {/* 进一步减少间距 */}
         {/* 图表区域 - 占据更多空间 */}
-        <div className="flex-1 flex flex-col items-center justify-center">
-          {/* 控制器区域 - 移动到图表容器上方，紧贴图表 */}
-          <div className="flex flex-col items-center space-y-3 mb-4">
-            {/* 时间选择器 */}
-            <TimeSelector
-              selectedMonth={selectedMonth}
-              selectedWeek={selectedWeek}
-              onMonthChange={handleMonthChange}
-              onWeekChange={handleWeekChange}
-            />
-
-            {/* 当前选择显示 */}
-            <motion.div
-              key={`${selectedMonth}-${selectedWeek}-display`}
-              className="text-center"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <p className="text-white/80 font-inria text-base">
-                Showing data for: <span className="text-white font-bold">{selectedMonth} - {selectedWeek}</span>
-              </p>
-            </motion.div>
-          </div>
-
-          {/* 图表容器 */}
+        <div className="flex-1 flex flex-col items-end justify-start pt-2"> {/* 减少顶部间距 */}
+          {/* 图表容器 - 调整尺寸和定位，适配实际内容 */}
           <motion.div
             className="relative bg-white/8 backdrop-blur-md rounded-2xl border border-white/15"
             style={{ 
-              width: '95%', 
-              maxWidth: '1800px', 
-              height: chartHeight + 150,
-              padding: '50px 60px 24px 48px'
+              width: `${chartHeight + 190}px`, // 减少宽度，使容器更紧凑
+              height: chartHeight + 570,
+              padding: '15px 30px 25px 15px', // 增加底部内边距
+              marginRight: '0px', // 确保贴近右边缘
+              marginTop: '-10px' // 向上平移20像素
             }}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            {/* Y轴标签 - 移动到Y轴刻度上方 */}
+            {/* X轴标签 - 调整位置 */}
             <motion.div
-              className="absolute left-0"
+              className="absolute bottom-0"
               style={{ 
-                top: `${50 - 43}px` // 调整后的top值 - 一个刻度间距
+                left: `${120 + chartHeight/2 - 30}px`, // 调整居中位置
+                bottom: '5px' // 调整底部位置
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              <span className="text-white font-inria text-sm opacity-80 pl-4">Days/Week</span>
+              <span className="text-white font-inria text-sm opacity-80">Days/Week</span>
             </motion.div>
 
-            {/* Y轴刻度 */}
-            <div className="absolute left-0 top-12 flex flex-col justify-between text-white/60 text-xs" style={{ height: chartHeight }}>
-              {[7, 6, 5, 4, 3, 2, 1, 0].map((value) => (
-                <div key={value} className="font-inria pl-4">
+            {/* X轴刻度 */}
+            <div className="absolute bottom-7 flex justify-between text-white/60 text-xs" 
+                 style={{ 
+                   left: '120px', 
+                   width: chartHeight + 'px'
+                 }}>
+              {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
+                <div key={value} className="font-inria text-center" style={{ minWidth: '20px' }}>
                   {value}
                 </div>
               ))}
             </div>
 
-            {/* 网格线 */}
-            <div className="absolute left-12 right-6 top-12" style={{ height: chartHeight }}>
+            {/* 网格线 - 垂直线 */}
+            <div className="absolute top-4 bottom-7" style={{ left: '120px', width: chartHeight }}>
               {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
                 <div
                   key={value}
-                  className="absolute w-full border-t border-white/10"
+                  className="absolute h-full border-l border-white/10"
                   style={{ 
-                    bottom: `${(value / 7) * 100}%`,
+                    left: `${(value / 7) * 100}%`,
                     opacity: value === 0 ? 0.4 : 0.2 // 0刻度线更明显
                   }}
                 />
               ))}
             </div>
 
-            {/* 图表内容 */}
+            {/* Y轴滑雪场图标排列 - 左侧垂直排列 */}
+            <motion.div
+              className="absolute top-4 flex flex-col"
+              style={{ 
+                left: '8px', 
+                height: chartHeight + 20, // 增加高度以适应更多滑雪场
+                width: '105px', // 进一步减少宽度
+                justifyContent: 'space-between' // 确保均匀分布
+              }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
+              {sortedResorts.map((resort, index) => (
+                <MountainChartIcon
+                  key={resort.id}
+                  resort={resort}
+                  index={index}
+                  totalResorts={sortedResorts.length}
+                />
+              ))}
+            </motion.div>
+
+            {/* 图表内容 - 水平条形图 */}
             <div 
               key={`${selectedMonth}-${selectedWeek}`}
-              className="absolute left-12 right-6 top-12 flex justify-between"
+              className="absolute top-4 flex flex-col"
               style={{ 
-                height: chartHeight
+                left: '120px', // 调整左侧位置
+                width: chartHeight,
+                height: chartHeight + 20, // 增加高度以适应更多滑雪场
+                justifyContent: 'space-between' // 确保与左侧图标对齐
               }}
             >
               {sortedResorts.map((resort, index) => {
                 const value = getCurrentResortData(resort);
-                const barHeight = (value / 7) * chartHeight;
+                const barWidth = (value / 7) * chartHeight;
                 
                 return (
                   <motion.div
                     key={`${resort.id}-${selectedMonth}-${selectedWeek}`}
-                    className="flex flex-col items-center relative"
+                    className="flex items-center relative"
                     style={{ 
-                      width: `${100 / sortedResorts.length}%`,
-                      minWidth: '32px',
-                      maxWidth: '45px',
-                      height: `${chartHeight}px`
+                      height: `calc(100% / ${sortedResorts.length})`, // 使用与图标相同的高度计算
+                      minHeight: '24px', // 减少最小高度
+                      maxHeight: '32px', // 减少最大高度
+                      width: `${chartHeight}px`
                     }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.02 }}
                   >
-                    {/* 数据值显示 */}
+                    {/* 水平柱状图 - 从左边开始 */}
                     <motion.div
-                      key={`value-${resort.id}-${selectedMonth}-${selectedWeek}`}
-                      className="text-white text-xs font-inria opacity-80 absolute"
+                      key={`bar-${resort.id}-${selectedMonth}-${selectedWeek}`}
+                      className="absolute left-0 rounded-r-md"
                       style={{
-                        bottom: `${barHeight + 15}px`
+                        height: '16px', // 减少条形图高度
+                        width: `${barWidth}px`,
+                        backgroundColor: resort.color,
+                        boxShadow: `0 0 20px ${resort.color}40`,
+                        top: '50%',
+                        transform: 'translateY(-50%)'
                       }}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, delay: 0.1 + index * 0.02 }}
-                    >
-                      {value.toFixed(1)}
-                    </motion.div>
+                      initial={{ width: 0 }}
+                      animate={{ width: `${barWidth}px` }}
+                      transition={{ 
+                        duration: 0.4, 
+                        delay: 0.05 + index * 0.02,
+                        ease: "easeOut"
+                      }}
+                    />
 
                     {/* 白色数据点 */}
                     <motion.div
                       key={`dot-${resort.id}-${selectedMonth}-${selectedWeek}`}
-                      className="w-3 h-3 bg-white rounded-full shadow-lg absolute"
+                      className="w-2.5 h-2.5 bg-white rounded-full shadow-lg absolute" // 减少数据点大小
                       style={{
-                        bottom: `${barHeight + 5}px`
+                        left: `${barWidth + 4}px`,
+                        top: '50%',
+                        transform: 'translateY(-50%)'
                       }}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -417,53 +433,38 @@ const ChartPage: React.FC = () => {
                       }}
                     />
 
-                    {/* 柱状图 - 从底部开始 */}
+                    {/* 数据值显示 */}
                     <motion.div
-                      key={`bar-${resort.id}-${selectedMonth}-${selectedWeek}`}
-                      className="absolute bottom-0 rounded-t-md"
+                      key={`value-${resort.id}-${selectedMonth}-${selectedWeek}`}
+                      className="text-white text-xs font-inria opacity-80 absolute"
                       style={{
-                        width: '20px',
-                        height: `${barHeight}px`,
-                        backgroundColor: resort.color,
-                        boxShadow: `0 0 20px ${resort.color}40`,
-                        left: '50%',
-                        transform: 'translateX(-50%)'
+                        left: `${barWidth + 15}px`, // 减少间距
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        fontSize: '10px' // 减少字体大小
                       }}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${barHeight}px` }}
-                      transition={{ 
-                        duration: 0.4, 
-                        delay: 0.05 + index * 0.02,
-                        ease: "easeOut"
-                      }}
-                    />
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: 0.1 + index * 0.02 }}
+                    >
+                      {value.toFixed(1)}
+                    </motion.div>
                   </motion.div>
                 );
               })}
             </div>
-
-            {/* 底部滑雪场图标排列 - 移动到图表容器内部 */}
-            <motion.div
-              className="absolute left-12 right-6 flex justify-center items-end"
-              style={{ bottom: '10px' }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.2 }}
-            >
-              <div 
-                className="flex justify-between items-end w-full"
-              >
-                {sortedResorts.map((resort, index) => (
-                  <MountainChartIcon
-                    key={resort.id}
-                    resort={resort}
-                    index={index}
-                    totalResorts={sortedResorts.length}
-                  />
-                ))}
-              </div>
-            </motion.div>
           </motion.div>
+        </div>
+
+        {/* 控制器区域 - 移至主容器底部，确保在图表外 */}
+        <div className="flex flex-col items-end space-y-2 pb-4 pr-4"> {/* 右对齐并添加底部和右侧间距 */}
+          {/* 时间选择器 */}
+          <TimeSelector
+            selectedMonth={selectedMonth}
+            selectedWeek={selectedWeek}
+            onMonthChange={handleMonthChange}
+            onWeekChange={handleWeekChange}
+          />
         </div>
       </div>
     </div>

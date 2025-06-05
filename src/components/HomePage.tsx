@@ -4,7 +4,11 @@ import ScrollIndicator from './ScrollIndicator';
 // 导入新的山脉SVG资源
 import mountainSvg from '../assets/00mountain.svg';
 
-const HomePage: React.FC = () => {
+interface HomePageProps {
+  isActive: boolean;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ isActive }) => {
   const [snowflakes, setSnowflakes] = useState<Array<{
     id: number;
     delay: number;

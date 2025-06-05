@@ -4,6 +4,10 @@ import { skiResorts, SkiResort } from '../types/SkiResort';
 import SkiResortCard from './SkiResortCard';
 import skiMapSvg from '../assets/00ski_map.svg';
 
+interface MapPageProps {
+  isActive: boolean;
+}
+
 // 区域限制的雪花组件 - 仅在地图右侧显示
 const RegionalSnowflake: React.FC<{
   delay: number;
@@ -58,7 +62,7 @@ const RegionalSnowflake: React.FC<{
   );
 };
 
-const MapPage: React.FC = () => {
+const MapPage: React.FC<MapPageProps> = ({ isActive }) => {
   const [hoveredResort, setHoveredResort] = useState<SkiResort | null>(null);
   const [regionalSnowflakes, setRegionalSnowflakes] = useState<Array<{
     id: number;
@@ -259,79 +263,83 @@ const MapPage: React.FC = () => {
       </motion.div>
 
       {/* 返回首页提示 - 调整为页面正上方居中显示 */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ 
-          opacity: 1, 
-          y: [0, -3, 0]
-        }}
-        transition={{ 
-          opacity: { duration: 0.6, delay: 0.9 },
-          y: {
-            duration: 1.8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }
-        }}
-        className="fixed top-2 left-1/2 transform -translate-x-1/2 md:top-4 flex flex-col items-center z-50"
-      >
-        <motion.svg
-          width="18"
-          height="10"
-          viewBox="0 0 24 16"
-          fill="none"
-          className="mb-1"
-          style={{ color: '#293F88' }}
+      {isActive && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ 
+            opacity: 1, 
+            y: [0, -3, 0]
+          }}
+          transition={{ 
+            opacity: { duration: 0.6, delay: 0.9 },
+            y: {
+              duration: 1.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }
+          }}
+          className="fixed top-2 left-1/2 transform -translate-x-1/2 md:top-4 flex flex-col items-center z-50"
         >
-          <path
-            d="M22 14L12 4L2 14"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </motion.svg>
-        <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full whitespace-nowrap">
-          Scroll up to return
-        </p>
-      </motion.div>
+          <motion.svg
+            width="18"
+            height="10"
+            viewBox="0 0 24 16"
+            fill="none"
+            className="mb-1"
+            style={{ color: '#293F88' }}
+          >
+            <path
+              d="M22 14L12 4L2 14"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+          <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full whitespace-nowrap">
+            Scroll up to return
+          </p>
+        </motion.div>
+      )}
 
       {/* 向下探索提示 - 页面下方中央显示 */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ 
-          opacity: 1, 
-          y: [0, 3, 0]
-        }}
-        transition={{ 
-          opacity: { duration: 0.6, delay: 1.1 },
-          y: {
-            duration: 1.8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }
-        }}
-        className="fixed bottom-2 left-1/2 transform -translate-x-1/2 md:bottom-4 flex flex-col items-center z-50"
-      >
-        <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full mb-1 whitespace-nowrap">
-          Scroll down to explore blue bird days
-        </p>
-        <motion.svg
-          width="18"
-          height="10"
-          viewBox="0 0 24 16"
-          fill="none"
-          style={{ color: '#293F88' }}
+      {isActive && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ 
+            opacity: 1, 
+            y: [0, 3, 0]
+          }}
+          transition={{ 
+            opacity: { duration: 0.6, delay: 1.1 },
+            y: {
+              duration: 1.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }
+          }}
+          className="fixed bottom-2 left-1/2 transform -translate-x-1/2 md:bottom-4 flex flex-col items-center z-50"
         >
-          <path
-            d="M2 2L12 12L22 2"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </motion.svg>
-      </motion.div>
+          <p className="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full mb-1 whitespace-nowrap">
+            Scroll down to explore blue bird days
+          </p>
+          <motion.svg
+            width="18"
+            height="10"
+            viewBox="0 0 24 16"
+            fill="none"
+            style={{ color: '#293F88' }}
+          >
+            <path
+              d="M2 2L12 12L22 2"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+        </motion.div>
+      )}
     </div>
   );
 };
